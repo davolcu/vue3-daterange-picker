@@ -808,16 +808,25 @@ export default {
     watch: {
         minDate() {
             this.selectMonthDate();
-            // let dt = this.$dateUtil.validateDateRange(this.monthDate, this.minDate || new Date(), this.maxDate)
-            // this.changeLeftMonth({year: dt.getFullYear(), month: dt.getMonth() + 1})
         },
         maxDate() {
             this.selectMonthDate();
-            // let dt = this.$dateUtil.validateDateRange(this.nextMonthDate, this.minDate, this.maxDate || new Date())
-            // if (this.singleDatePicker !== false)
-            //   this.changeLeftMonth({year: dt.getFullYear(), month: dt.getMonth() + 1})
-            // else
-            //   this.changeRightMonth({year: dt.getFullYear(), month: dt.getMonth() + 1})
+        },
+        start(value, prevValue) {
+            const startTime = value?.getTime();
+            const prevStartTime = prevValue?.getTime();
+
+            if (startTime !== prevStartTime) {
+                Reflect.set(this.modelValue, 'startDate', value);
+            }
+        },
+        end(value, prevValue) {
+            const endTime = value?.getTime();
+            const prevEndTime = prevValue?.getTime();
+
+            if (endTime !== prevEndTime) {
+                Reflect.set(this.modelValue, 'endDate', value);
+            }
         },
         'modelValue.startDate'(value) {
             if (!this.$dateUtil.isValidDate(new Date(value))) return;

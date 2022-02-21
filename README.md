@@ -1,6 +1,6 @@
 # vue3-daterange-picker
 
-> Vuee date range picker base on https://innologica.github.io/vue2-daterange-picker (no jQuery)
+> Vue date range picker base on https://innologica.github.io/vue2-daterange-picker (no jQuery)
 
 ## Demo and Usage
 
