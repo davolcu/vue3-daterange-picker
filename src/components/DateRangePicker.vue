@@ -15,30 +15,26 @@
                 <b class="caret"></b>
             </slot>
         </div>
-        <transition name="slide-fade" mode="out-in">
-            <div
-                class="daterangepicker ltr"
-                :class="pickerStyles"
-                v-if="open || opens === 'inline'"
-                v-append-to-body
-                ref="dropdown"
-            >
-                <!--
+
+        <Teleport to="body" :disabled="!appendToBody">
+            <transition name="slide-fade" mode="out-in">
+                <div class="daterangepicker ltr" :class="pickerStyles" v-if="open || opens === 'inline'" ref="dropdown">
+                    <!--
           Optional header slot (same props as footer) @see footer slot for documentation
         -->
-                <slot
-                    name="header"
-                    :rangeText="rangeText"
-                    :locale="locale"
-                    :clickCancel="clickCancel"
-                    :clickApply="clickedApply"
-                    :in_selection="in_selection"
-                    :autoApply="autoApply"
-                >
-                </slot>
+                    <slot
+                        name="header"
+                        :rangeText="rangeText"
+                        :locale="locale"
+                        :clickCancel="clickCancel"
+                        :clickApply="clickedApply"
+                        :in_selection="in_selection"
+                        :autoApply="autoApply"
+                    >
+                    </slot>
 
-                <div class="calendars">
-                    <!--
+                    <div class="calendars">
+                        <!--
             Allows you to change the range
 
             @param {Date} startDate - current startDate
@@ -46,114 +42,114 @@
             @param {object} ranges - object with ranges
             @param {Fn} clickRange(dateRange) - call to select the dateRange - any two date objects or an object from tha ranges array
           -->
-                    <slot
-                        name="ranges"
-                        :startDate="start"
-                        :endDate="end"
-                        :ranges="ranges"
-                        :clickRange="clickRange"
-                        v-if="showRanges"
-                    >
-                        <calendar-ranges
-                            @clickRange="clickRange"
-                            @showCustomRange="showCustomRangeCalendars = true"
-                            :always-show-calendars="alwaysShowCalendars"
-                            :locale-data="locale"
+                        <slot
+                            name="ranges"
+                            :startDate="start"
+                            :endDate="end"
                             :ranges="ranges"
-                            :selected="{ startDate: start, endDate: end }"
-                        ></calendar-ranges>
-                    </slot>
+                            :clickRange="clickRange"
+                            v-if="showRanges"
+                        >
+                            <calendar-ranges
+                                @clickRange="clickRange"
+                                @showCustomRange="showCustomRangeCalendars = true"
+                                :always-show-calendars="alwaysShowCalendars"
+                                :locale-data="locale"
+                                :ranges="ranges"
+                                :selected="{ startDate: start, endDate: end }"
+                            ></calendar-ranges>
+                        </slot>
 
-                    <div class="calendars-container" v-if="showCalendars">
-                        <div class="drp-calendar col left" :class="{ single: singleDatePicker }">
-                            <div class="daterangepicker_input d-none d-sm-block" v-if="false">
-                                <input
-                                    class="input-mini form-control"
-                                    type="text"
-                                    name="daterangepicker_start"
-                                    :value="startText"
+                        <div class="calendars-container" v-if="showCalendars">
+                            <div class="drp-calendar col left" :class="{ single: singleDatePicker }">
+                                <div class="daterangepicker_input d-none d-sm-block" v-if="false">
+                                    <input
+                                        class="input-mini form-control"
+                                        type="text"
+                                        name="daterangepicker_start"
+                                        :value="startText"
+                                    />
+                                    <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
+                                </div>
+                                <div class="calendar-table">
+                                    <calendar
+                                        :monthDate="monthDate"
+                                        :locale-data="locale"
+                                        :start="start"
+                                        :end="end"
+                                        :minDate="min"
+                                        :maxDate="max"
+                                        :show-dropdowns="showDropdowns"
+                                        @change-month="changeLeftMonth"
+                                        :date-format="dateFormatFn"
+                                        @dateClick="dateClick"
+                                        @hoverDate="hoverDate"
+                                        :showWeekNumbers="showWeekNumbers"
+                                    >
+                                        <template #date-slot>
+                                            <slot name="date" />
+                                        </template>
+                                    </calendar>
+                                </div>
+                                <calendar-time
+                                    v-if="timePicker && start"
+                                    @update="onUpdateStartTime"
+                                    :miniute-increment="timePickerIncrement"
+                                    :hour24="timePicker24Hour"
+                                    :second-picker="timePickerSeconds"
+                                    :current-time="start"
+                                    :readonly="readonly"
                                 />
-                                <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
                             </div>
-                            <div class="calendar-table">
-                                <calendar
-                                    :monthDate="monthDate"
-                                    :locale-data="locale"
-                                    :start="start"
-                                    :end="end"
-                                    :minDate="min"
-                                    :maxDate="max"
-                                    :show-dropdowns="showDropdowns"
-                                    @change-month="changeLeftMonth"
-                                    :date-format="dateFormatFn"
-                                    @dateClick="dateClick"
-                                    @hoverDate="hoverDate"
-                                    :showWeekNumbers="showWeekNumbers"
-                                >
-                                    <template #date-slot>
-                                        <slot name="date" />
-                                    </template>
-                                </calendar>
-                            </div>
-                            <calendar-time
-                                v-if="timePicker && start"
-                                @update="onUpdateStartTime"
-                                :miniute-increment="timePickerIncrement"
-                                :hour24="timePicker24Hour"
-                                :second-picker="timePickerSeconds"
-                                :current-time="start"
-                                :readonly="readonly"
-                            />
-                        </div>
 
-                        <div class="drp-calendar col right" v-if="!singleDatePicker">
-                            <div class="daterangepicker_input" v-if="false">
-                                <input
-                                    class="input-mini form-control"
-                                    type="text"
-                                    name="daterangepicker_end"
-                                    :value="endText"
-                                />
-                                <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
-                            </div>
-                            <div class="calendar-table">
-                                <calendar
-                                    :monthDate="nextMonthDate"
-                                    :locale-data="locale"
-                                    :start="start"
-                                    :end="end"
-                                    :minDate="min"
-                                    :maxDate="max"
-                                    :show-dropdowns="showDropdowns"
-                                    @change-month="changeRightMonth"
-                                    :date-format="dateFormatFn"
-                                    @dateClick="dateClick"
-                                    @hoverDate="hoverDate"
-                                    :showWeekNumbers="showWeekNumbers"
-                                >
-                                    <!--
+                            <div class="drp-calendar col right" v-if="!singleDatePicker">
+                                <div class="daterangepicker_input" v-if="false">
+                                    <input
+                                        class="input-mini form-control"
+                                        type="text"
+                                        name="daterangepicker_end"
+                                        :value="endText"
+                                    />
+                                    <i class="fa fa-calendar glyphicon glyphicon-calendar"></i>
+                                </div>
+                                <div class="calendar-table">
+                                    <calendar
+                                        :monthDate="nextMonthDate"
+                                        :locale-data="locale"
+                                        :start="start"
+                                        :end="end"
+                                        :minDate="min"
+                                        :maxDate="max"
+                                        :show-dropdowns="showDropdowns"
+                                        @change-month="changeRightMonth"
+                                        :date-format="dateFormatFn"
+                                        @dateClick="dateClick"
+                                        @hoverDate="hoverDate"
+                                        :showWeekNumbers="showWeekNumbers"
+                                    >
+                                        <!--
                     Allows you to change date cell slot. By default it renders the day number
 
                     @param {Date} date - the date being rendered into the table cell
                   -->
-                                    <template #date-slot>
-                                        <slot name="date" />
-                                    </template>
-                                </calendar>
+                                        <template #date-slot>
+                                            <slot name="date" />
+                                        </template>
+                                    </calendar>
+                                </div>
+                                <calendar-time
+                                    v-if="timePicker && end"
+                                    @update="onUpdateEndTime"
+                                    :miniute-increment="timePickerIncrement"
+                                    :hour24="timePicker24Hour"
+                                    :second-picker="timePickerSeconds"
+                                    :current-time="end"
+                                    :readonly="readonly"
+                                />
                             </div>
-                            <calendar-time
-                                v-if="timePicker && end"
-                                @update="onUpdateEndTime"
-                                :miniute-increment="timePickerIncrement"
-                                :hour24="timePicker24Hour"
-                                :second-picker="timePickerSeconds"
-                                :current-time="end"
-                                :readonly="readonly"
-                            />
                         </div>
                     </div>
-                </div>
-                <!--
+                    <!--
           Allows you to change footer of the component (where the buttons are)
 
           @param {string} rangeText - the formatted date range by the component
@@ -163,38 +159,39 @@
           @param {boolean} in_selection - is the picker in selection mode
           @param {boolean} autoApply - value of the autoApply prop (whether to select immediately)
         -->
-                <slot
-                    name="footer"
-                    :rangeText="rangeText"
-                    :locale="locale"
-                    :clickCancel="clickCancel"
-                    :clickApply="clickedApply"
-                    :in_selection="in_selection"
-                    :autoApply="autoApply"
-                >
-                    <div class="drp-buttons" v-if="!autoApply">
-                        <span class="drp-selected" v-if="showCalendars">{{ rangeText }}</span>
-                        <button
-                            class="cancelBtn btn btn-sm btn-secondary"
-                            type="button"
-                            @click="clickCancel"
-                            v-if="!readonly"
-                        >
-                            {{ locale.cancelLabel }}
-                        </button>
-                        <button
-                            class="applyBtn btn btn-sm btn-success"
-                            :disabled="in_selection"
-                            type="button"
-                            @click="clickedApply"
-                            v-if="!readonly"
-                        >
-                            {{ locale.applyLabel }}
-                        </button>
-                    </div>
-                </slot>
-            </div>
-        </transition>
+                    <slot
+                        name="footer"
+                        :rangeText="rangeText"
+                        :locale="locale"
+                        :clickCancel="clickCancel"
+                        :clickApply="clickedApply"
+                        :in_selection="in_selection"
+                        :autoApply="autoApply"
+                    >
+                        <div class="drp-buttons" v-if="!autoApply">
+                            <span class="drp-selected" v-if="showCalendars">{{ rangeText }}</span>
+                            <button
+                                class="cancelBtn btn btn-sm btn-secondary"
+                                type="button"
+                                @click="clickCancel"
+                                v-if="!readonly"
+                            >
+                                {{ locale.cancelLabel }}
+                            </button>
+                            <button
+                                class="applyBtn btn btn-sm btn-success"
+                                :disabled="in_selection"
+                                type="button"
+                                @click="clickedApply"
+                                v-if="!readonly"
+                            >
+                                {{ locale.applyLabel }}
+                            </button>
+                        </div>
+                    </slot>
+                </div>
+            </transition>
+        </Teleport>
     </div>
 </template>
 
@@ -204,13 +201,11 @@ import Calendar from './Calendar.vue';
 import CalendarTime from './CalendarTime';
 import CalendarRanges from './CalendarRanges';
 import { getDateUtil } from './util';
-import appendToBody from '../directives/appendToBody';
 
 export default {
     inheritAttrs: false,
     components: { Calendar, CalendarTime, CalendarRanges },
     mixins: [dateUtilMixin],
-    directives: { appendToBody },
     props: {
         /**
          * minimum date allowed to be selected
@@ -1027,7 +1022,7 @@ $week-width: 0px;
     transition: all 0.1s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
-.slide-fade-enter, .slide-fade-leave-to
+.slide-fade-enter-from, .slide-fade-leave-to
   /* .slide-fade-leave-active for <2.1.8 */ {
     transform: translateX(10px);
     opacity: 0;
