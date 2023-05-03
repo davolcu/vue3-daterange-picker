@@ -87,7 +87,7 @@
                                         :showWeekNumbers="showWeekNumbers"
                                     >
                                         <template #date-slot="{ date }">
-                                            <slot name="date" :data="date"/>
+                                            <slot name="date" :date="date"/>
                                         </template>
                                     </calendar>
                                 </div>
@@ -133,7 +133,7 @@
                     @param {Date} date - the date being rendered into the table cell
                   -->
                                         <template #date-slot="{ date }">
-                                            <slot name="date" :data="date"/>
+                                            <slot name="date" :date="date"/>
                                         </template>
                                     </calendar>
                                 </div>
