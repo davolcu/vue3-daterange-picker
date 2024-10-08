@@ -1,6 +1,6 @@
 {
   "name": "daterange-picker-vue3",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Vue3 date range picker based on https://github.com/Innologica/vue2-daterange-picker (no jQuery)",
   "author": "David Olmos",
   "main": "dist/daterange-picker-vue3.umd.min.js",
